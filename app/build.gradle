@@ -12,6 +12,7 @@ android {
         targetSdkVersion 28
         versionCode 6
         versionName "0.1.5-beta"
+        setProperty("archivesBaseName", "nl.rogro82.pipup")
     }
     buildTypes {
         release {

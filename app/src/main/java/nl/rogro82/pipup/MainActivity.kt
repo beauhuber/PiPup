@@ -18,8 +18,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.TextView
+import android.widget.Toast
 import nl.rogro82.pipup.Utils.getIpAddress
 
 class MainActivity : Activity() {
@@ -28,35 +27,35 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // start service in foreground
-
-        val textViewConnection = findViewById<TextView>(R.id.textViewServerAddress)
-        val textViewServerAddress = findViewById<TextView>(R.id.textViewServerAddress)
-
         when(val ipAddress = getIpAddress()) {
             is String -> {
-                textViewConnection.setText(R.string.server_running)
-                textViewServerAddress.apply {
-                    visibility = View.VISIBLE
-                    text = resources.getString(
-                        R.string.server_address,
+                Toast.makeText(
+                    this,
+                    resources.getString(
+                        R.string.popup_server_running,
                         ipAddress,
                         PiPupService.SERVER_PORT
-                    )
-                }
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             else -> {
-                textViewConnection.setText(R.string.no_network_connection)
-                textViewServerAddress.visibility = View.INVISIBLE
+                Toast.makeText(
+                    this,
+                    R.string.no_network_connection,
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
-
         val serviceIntent = Intent(this, PiPupService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // start the service in the foreground in Oreo onwards
             startForegroundService(serviceIntent)
         } else {
             startService(serviceIntent)
         }
+
+        finish()
     }
 }
